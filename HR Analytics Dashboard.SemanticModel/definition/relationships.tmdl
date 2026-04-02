@@ -1,0 +1,20 @@
+relationship 935383d1-b66f-4221-8df0-a59c58eae810
+	joinOnDateBehavior: datePartOnly
+	fromColumn: tbl_human_resources.DOB
+	toColumn: LocalDateTable_0920ecb3-0112-43f6-92b5-2b0b70b92d4b.Date
+
+relationship 6f9f3eb7-c617-4bd6-b4a5-407c2e40b2f5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: tbl_human_resources.DateofHire
+	toColumn: LocalDateTable_3cf804cb-ec11-43d5-a798-03af46fac2a4.Date
+
+relationship c69d5d91-7906-41c2-8d5d-e9cb21fa7559
+	joinOnDateBehavior: datePartOnly
+	fromColumn: tbl_human_resources.DateofTermination
+	toColumn: LocalDateTable_c790bf03-6c69-4ee9-af88-3a841ce41ff9.Date
+
+relationship 26541153-a416-4104-9fdd-c995ba177066
+	joinOnDateBehavior: datePartOnly
+	fromColumn: tbl_human_resources.LastPerformanceReview_Date
+	toColumn: LocalDateTable_0dba1ccb-03e5-4fce-998a-f0db240ac6b1.Date
+

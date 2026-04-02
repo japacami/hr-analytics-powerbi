@@ -1,6 +1,21 @@
 table tbl_human_resources
 	lineageTag: fd135397-4ecb-4b7a-a5da-44713c4ceb2a
 
+	measure 'Headcount Total' =
+			
+			CALCULATE(
+			    COUNTROWS('tbl_human_resources'),
+			    'tbl_human_resources'[EmploymentStatus] = "Active"
+			)
+		formatString: 0
+		lineageTag: 25769d77-68c8-439a-8828-efbc4ed9456c
+
+	measure 'Average Salary' = AVERAGE('tbl_human_resources'[Salary])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: a8505e8f-6f36-4a95-9c63-5264ef2cd10e
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
 	column Employee_Name
 		dataType: string
 		lineageTag: 34c96f38-af9f-4a90-af1e-d20a33d2481a
@@ -74,12 +89,15 @@ table tbl_human_resources
 		annotation SummarizationSetBy = Automatic
 
 	column Salary
-		dataType: string
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
 		lineageTag: c99a2402-717c-42f2-85ba-7b4b6b949743
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Salary
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
 	column Termd
 		dataType: string
@@ -122,12 +140,20 @@ table tbl_human_resources
 		annotation SummarizationSetBy = Automatic
 
 	column DOB
-		dataType: string
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: 1d3d274c-0f8e-49e6-9279-e5ec3958b485
 		summarizeBy: none
 		sourceColumn: DOB
 
+		variation Variation
+			isDefault
+			relationship: 935383d1-b66f-4221-8df0-a59c58eae810
+			defaultHierarchy: LocalDateTable_0920ecb3-0112-43f6-92b5-2b0b70b92d4b.'Hierarquia de datas'
+
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column Sex
 		dataType: string
@@ -170,20 +196,36 @@ table tbl_human_resources
 		annotation SummarizationSetBy = Automatic
 
 	column DateofHire
-		dataType: string
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: bc1a5fa7-6e50-4585-b7e6-dff9b55b0f92
 		summarizeBy: none
 		sourceColumn: DateofHire
 
+		variation Variation
+			isDefault
+			relationship: 6f9f3eb7-c617-4bd6-b4a5-407c2e40b2f5
+			defaultHierarchy: LocalDateTable_3cf804cb-ec11-43d5-a798-03af46fac2a4.'Hierarquia de datas'
+
 		annotation SummarizationSetBy = Automatic
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column DateofTermination
-		dataType: string
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: 8e4e6e56-8e82-4213-966b-2d660f2156dc
 		summarizeBy: none
 		sourceColumn: DateofTermination
 
+		variation Variation
+			isDefault
+			relationship: c69d5d91-7906-41c2-8d5d-e9cb21fa7559
+			defaultHierarchy: LocalDateTable_c790bf03-6c69-4ee9-af88-3a841ce41ff9.'Hierarquia de datas'
+
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column TermReason
 		dataType: string
@@ -266,12 +308,20 @@ table tbl_human_resources
 		annotation SummarizationSetBy = Automatic
 
 	column LastPerformanceReview_Date
-		dataType: string
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: ef182045-1194-4fb4-a8f9-b0a421ed1fe7
 		summarizeBy: none
 		sourceColumn: LastPerformanceReview_Date
 
+		variation Variation
+			isDefault
+			relationship: 26541153-a416-4104-9fdd-c995ba177066
+			defaultHierarchy: LocalDateTable_0dba1ccb-03e5-4fce-998a-f0db240ac6b1.'Hierarquia de datas'
+
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column DaysLateLast30
 		dataType: string
@@ -294,9 +344,14 @@ table tbl_human_resources
 		source =
 				let
 				    Fonte = Csv.Document(Web.Contents("https://raw.githubusercontent.com/japacami/hr-analytics-powerbi/refs/heads/main/raw/tbl_human_resources.csv"),[Delimiter=",", Columns=36, Encoding=65001, QuoteStyle=QuoteStyle.None]),
-				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true])
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+				    #"Tipo Alterado com Localidade" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos", {{"DOB", type date}}, "en-US"),
+				    #"Tipo Alterado com Localidade1" = Table.TransformColumnTypes(#"Tipo Alterado com Localidade", {{"DateofHire", type date}}, "en-US"),
+				    #"Tipo Alterado com Localidade2" = Table.TransformColumnTypes(#"Tipo Alterado com Localidade1", {{"LastPerformanceReview_Date", type date}}, "en-US"),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Tipo Alterado com Localidade2",{{"Salary", Currency.Type}}),
+				    #"Tipo Alterado com Localidade3" = Table.TransformColumnTypes(#"Tipo Alterado", {{"DateofTermination", type date}}, "en-US")
 				in
-				    #"Cabeçalhos Promovidos"
+				    #"Tipo Alterado com Localidade3"
 
 	annotation PBI_NavigationStepName = Navegação
 

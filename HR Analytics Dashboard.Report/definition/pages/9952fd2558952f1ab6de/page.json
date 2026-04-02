@@ -1,8 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "90f848c683324b191134",
-  "displayName": "Overview HR",
+  "name": "9952fd2558952f1ab6de",
+  "displayName": "Recruitment",
   "displayOption": "FitToPage",
   "height": 720,
-  "width": 1280
+  "width": 1280,
+  "visibility": "HiddenInViewMode"
 }
